@@ -38,6 +38,21 @@ function escapeHtml(str) {
 }
 
 /**
+ * Updates the note count paragraph:
+ * "You have no notes yet.", "You have 1 note." or "You have N notes."
+ */
+function updateNoteCount() {
+  const count = notes.length;
+  if (count === 0) {
+    noteCount.textContent = "You have no notes yet.";
+  } else if (count === 1) {
+    noteCount.textContent = "You have 1 note.";
+  } else {
+    noteCount.textContent = `You have ${count} notes.`;
+  }
+}
+
+/**
  * Renders notes in the notes list.
  */
 function renderNotes() {
@@ -64,20 +79,47 @@ function renderNotes() {
 
     notesList.appendChild(li);
   });
+
+  updateNoteCount();
 }
 
 /**
- * Handles note form submission.
+ * Deletes a note by its ID.
+ */
+function deleteNote(id) {
+  notes = notes.filter((note) => String(note.id) !== String(id));
+  renderNotes();
+}
+
+/**
+ * Handles note form submission with validation.
  */
 function handleAddNote(event) {
   event.preventDefault();
 
-  const text = noteInput.value;
+  const rawText = noteInput.value;
+  const trimmedText = rawText.trim();
+
+  // Validation 1: empty or only spaces
+  if (trimmedText === "") {
+    errorMessage.textContent = "Please type a note first.";
+    return;
+  }
+
+  // Validation 2: over 200 characters
+  if (rawText.length > 200) {
+    errorMessage.textContent = "Notes must be 200 characters or fewer.";
+    return;
+  }
+
+  // Clear error message when valid note is added
+  errorMessage.textContent = "";
+
   const category = noteCategory.value;
 
   const newNote = {
     id: Date.now().toString(),
-    text: text,
+    text: trimmedText,
     category: category,
     createdAt: formatReadableDate(new Date()),
   };
@@ -91,3 +133,27 @@ function handleAddNote(event) {
 
 // Event Listeners
 noteForm.addEventListener("submit", handleAddNote);
+
+// Event delegation for delete buttons
+notesList.addEventListener("click", (event) => {
+  const target = event.target;
+  if (target && target.classList.contains("delete-btn")) {
+    const id = target.getAttribute("data-id");
+    if (id) {
+      deleteNote(id);
+    }
+  }
+});
+
+// Clear error message as user types
+noteInput.addEventListener("input", () => {
+  if (errorMessage.textContent !== "") {
+    const raw = noteInput.value;
+    if (raw.trim().length > 0 && raw.length <= 200) {
+      errorMessage.textContent = "";
+    }
+  }
+});
+
+// Initial count update
+updateNoteCount();
