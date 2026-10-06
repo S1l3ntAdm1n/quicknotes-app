@@ -1,4 +1,6 @@
 // QuickNotes - Note Taking Application Logic
+// LocalStorage key constant
+const STORAGE_KEY = "quicknotes";
 
 // Global notes array
 let notes = [];
@@ -38,6 +40,35 @@ function escapeHtml(str) {
 }
 
 /**
+ * Saves the current notes array to localStorage.
+ */
+function saveNotes() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+}
+
+/**
+ * Loads notes from localStorage upon application startup.
+ */
+function loadNotes() {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  if (savedData) {
+    try {
+      const parsed = JSON.parse(savedData);
+      if (Array.isArray(parsed)) {
+        notes = parsed;
+      } else {
+        notes = [];
+      }
+    } catch (e) {
+      console.error("Failed to parse notes from localStorage:", e);
+      notes = [];
+    }
+  } else {
+    notes = [];
+  }
+}
+
+/**
  * Updates the note count paragraph:
  * "You have no notes yet.", "You have 1 note." or "You have N notes."
  */
@@ -54,11 +85,30 @@ function updateNoteCount() {
 
 /**
  * Renders notes in the notes list.
+ * Supports filtering by search keyword and empty state messages.
  */
 function renderNotes() {
   notesList.innerHTML = "";
 
-  notes.forEach((note) => {
+  const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+  // Filter notes based on search query (case-insensitive)
+  const filteredNotes = query === ""
+    ? notes
+    : notes.filter((note) => note.text.toLowerCase().includes(query));
+
+  // If a search finds nothing, show a message in the list
+  if (query !== "" && filteredNotes.length === 0) {
+    const emptyLi = document.createElement("li");
+    emptyLi.className = "empty-state-message";
+    emptyLi.textContent = "No notes match your search.";
+    notesList.appendChild(emptyLi);
+    updateNoteCount();
+    return;
+  }
+
+  // Render note cards
+  filteredNotes.forEach((note) => {
     const li = document.createElement("li");
     const categoryClass = `category-${note.category.toLowerCase()}`;
     li.className = `note-card ${categoryClass}`;
@@ -84,10 +134,11 @@ function renderNotes() {
 }
 
 /**
- * Deletes a note by its ID.
+ * Deletes a note by its ID and updates storage.
  */
 function deleteNote(id) {
   notes = notes.filter((note) => String(note.id) !== String(id));
+  saveNotes();
   renderNotes();
 }
 
@@ -125,13 +176,34 @@ function handleAddNote(event) {
   };
 
   notes.push(newNote);
+  saveNotes();
   renderNotes();
 
   // Clear input
   noteInput.value = "";
 }
 
+/**
+ * Handles clearing all notes with confirmation prompt.
+ */
+function handleClearAll() {
+  if (notes.length === 0) {
+    return;
+  }
+
+  const confirmed = confirm("Delete all notes?");
+  if (confirmed) {
+    notes = [];
+    saveNotes();
+    renderNotes();
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Event Listeners
+// ---------------------------------------------------------------------------
+
+// Form submit event
 noteForm.addEventListener("submit", handleAddNote);
 
 // Event delegation for delete buttons
@@ -145,7 +217,19 @@ notesList.addEventListener("click", (event) => {
   }
 });
 
-// Clear error message as user types
+// Search input live filtering
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    renderNotes();
+  });
+}
+
+// Clear all button
+if (clearAllBtn) {
+  clearAllBtn.addEventListener("click", handleClearAll);
+}
+
+// Clear error message dynamically as user types valid text
 noteInput.addEventListener("input", () => {
   if (errorMessage.textContent !== "") {
     const raw = noteInput.value;
@@ -155,5 +239,13 @@ noteInput.addEventListener("input", () => {
   }
 });
 
-// Initial count update
-updateNoteCount();
+// ---------------------------------------------------------------------------
+// Initialization
+// ---------------------------------------------------------------------------
+function init() {
+  loadNotes();
+  renderNotes();
+}
+
+// Initialize on script load
+init();
