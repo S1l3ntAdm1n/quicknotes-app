@@ -1,117 +1,8 @@
 /* ==========================================================================
-   QuickNotes - Adapted from Day 4 Stylesheet
-   Theming via CSS Custom Properties & Project 1 Card Layout
+   QuickNotes - Modern, Clean & Accessible Stylesheet
    ========================================================================== */
 
-/* 1. CSS Variables on :root (Light Theme - from Day 4) */
-:root {
-  /* Colors */
-  --bg-body: #f8fafc;
-  --bg-gradient: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 75%);
-  --header-bg: #ffffff;
-  --header-border: #e2e8f0;
-  --card-bg: #ffffff;
-  --card-border: #e2e8f0;
-  --card-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
-
-  --input-bg: #ffffff;
-  --input-border: #cbd5e1;
-  --input-text: #0f172a;
-  --input-placeholder: #94a3b8;
-  --input-focus-border: #2563eb;
-  --input-focus-ring: rgba(37, 99, 235, 0.15);
-
-  --primary-accent: #2563eb;
-  --primary-accent-hover: #1d4ed8;
-
-  --clear-btn-bg: #fee2e2;
-  --clear-btn-text: #b91c1c;
-  --clear-btn-border: #fecaca;
-  --clear-btn-hover-bg: #fecaca;
-  --clear-btn-hover-text: #991b1b;
-
-  --theme-btn-bg: #f1f5f9;
-  --theme-btn-text: #1e293b;
-  --theme-btn-border: #cbd5e1;
-  --theme-btn-hover-bg: #e2e8f0;
-
-  --counter-bg: #f8fafc;
-  --counter-border: #e2e8f0;
-  --counter-text: #475569;
-
-  --badge-bg: #eff6ff;
-  --badge-text: #1d4ed8;
-  --badge-border: #bfdbfe;
-
-  --footer-text: #64748b;
-  --footer-border: #e2e8f0;
-
-  /* Category Colors (Task 2) */
-  --category-personal: #0d9488; /* Teal */
-  --category-work: #991b1b;     /* Dark Red */
-  --category-study: #2563eb;    /* Blue */
-
-  --error-color: #dc2626;
-}
-
-/* 2. Dark Theme: Redefining ONLY the CSS variables (from Day 4) */
-body.dark {
-  --bg-body: #090d16;
-  --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 75%);
-  --header-bg: rgba(17, 24, 39, 0.85);
-  --header-border: rgba(255, 255, 255, 0.08);
-  --card-bg: rgba(17, 24, 39, 0.85);
-  --card-border: rgba(255, 255, 255, 0.1);
-  --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55), 0 0 1px 1px rgba(255, 255, 255, 0.05);
-
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-
-  --input-bg: rgba(15, 23, 42, 0.8);
-  --input-border: #334155;
-  --input-text: #f8fafc;
-  --input-placeholder: #64748b;
-  --input-focus-border: #38bdf8;
-  --input-focus-ring: rgba(56, 189, 248, 0.2);
-
-  --primary-accent: #38bdf8;
-  --primary-accent-hover: #0ea5e9;
-
-  --clear-btn-bg: rgba(239, 68, 68, 0.15);
-  --clear-btn-text: #f87171;
-  --clear-btn-border: rgba(239, 68, 68, 0.3);
-  --clear-btn-hover-bg: rgba(239, 68, 68, 0.25);
-  --clear-btn-hover-text: #fca5a5;
-
-  --theme-btn-bg: #1e293b;
-  --theme-btn-text: #f8fafc;
-  --theme-btn-border: #334155;
-  --theme-btn-hover-bg: #334155;
-
-  --counter-bg: rgba(15, 23, 42, 0.6);
-  --counter-border: #334155;
-  --counter-text: #94a3b8;
-
-  --badge-bg: rgba(56, 189, 248, 0.1);
-  --badge-text: #38bdf8;
-  --badge-border: rgba(56, 189, 248, 0.25);
-
-  --footer-text: #94a3b8;
-  --footer-border: rgba(255, 255, 255, 0.08);
-
-  --category-personal: #14b8a6;
-  --category-work: #ef4444;
-  --category-study: #60a5fa;
-
-  --error-color: #f87171;
-}
-
-/* 3. Base Resets */
+/* 1. Box-Sizing Reset & Base Setup */
 *,
 *::before,
 *::after {
@@ -120,22 +11,157 @@ body.dark {
   padding: 0;
 }
 
-body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-body);
-  background-image: var(--bg-gradient);
-  color: var(--text-main);
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.3s ease, color 0.3s ease;
+:root {
+  /* Brand / Theme Colors */
+  --header-bg: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-active: #1e40af;
+
+  /* Surfaces & Neutrals */
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+
+  /* Category Accent Colors */
+  --cat-personal: #0d9488; /* Teal */
+  --cat-personal-bg: rgba(13, 148, 136, 0.12);
+  --cat-work: #b91c1c;     /* Dark Red */
+  --cat-work-bg: rgba(185, 28, 28, 0.12);
+  --cat-study: #2563eb;    /* Blue */
+  --cat-study-bg: rgba(37, 99, 235, 0.12);
+
+  /* Action & Alert Colors */
+  --error-color: #dc2626;
+  --delete-btn: #ef4444;
+  --delete-btn-hover: #b91c1c;
+
+  /* Typography & Layout Tokens */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 6px 12px -2px rgba(0, 0, 0, 0.08);
 }
 
-.app-layout {
+/* 2. Body Styling */
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.5;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 3. Coloured Header */
+.app-header {
+  background: var(--header-bg);
+  color: #ffffff;
+  padding: 2.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+}
+
+.header-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.header-branding {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-icon {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.app-title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.25rem;
+}
+
+.tagline {
+  font-size: 0.95rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* 4. Centred Main Column (Max 700px) */
+.main-content {
+  max-width: 700px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  flex: 1 0 auto;
+}
+
+/* 5. White Section Cards with Rounded Corners */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-md);
+}
+
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.015em;
+}
+
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.section-header-row .section-title {
+  margin-bottom: 0;
+}
+
+/* 6. Form Laid Out with Flexbox */
+.note-form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group-text {
+  flex: 3;
+  min-width: 220px;
+}
+
+.form-group-select {
+  flex: 1.5;
+  min-width: 130px;
+}
+
+label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
 }
 
 .visually-hidden {
@@ -150,243 +176,103 @@ body {
   border: 0;
 }
 
-/* 4. Coloured Header (Day 4) */
-.app-header {
-  background-color: var(--header-bg);
-  border-bottom: 1px solid var(--header-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.header-inner {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.branding {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-}
-
-.logo-mark {
-  font-size: 1.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.brand-text h1 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: var(--text-main);
-  line-height: 1.2;
-}
-
-.tagline {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.nav-bar {
-  display: flex;
-  align-items: center;
-}
-
-#theme-toggle {
-  background-color: var(--theme-btn-bg);
-  color: var(--theme-btn-text);
-  border: 1px solid var(--theme-btn-border);
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
-}
-
-#theme-toggle:hover {
-  background-color: var(--theme-btn-hover-bg);
-  transform: translateY(-1px);
-}
-
-/* 5. Centred Main Column (max 700px) */
-.main-content {
-  flex: 1;
-  max-width: 700px;
-  width: 100%;
-  margin: 2rem auto;
-  padding: 0 1.25rem;
-}
-
-/* 6. White Section Cards with Rounded Corners */
-.card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
-  box-shadow: var(--card-shadow);
-  padding: 1.75rem;
-  margin-bottom: 1.75rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 1.25rem;
-  letter-spacing: -0.01em;
-}
-
-.section-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-.section-header-row h2 {
-  margin-bottom: 0;
-}
-
-/* 7. Flexbox Form */
-.note-form {
-  display: flex;
-  gap: 0.85rem;
-  align-items: flex-end;
-  width: 100%;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.form-group-text {
-  flex: 1;
-}
-
-.form-group-select {
-  flex-shrink: 0;
-  min-width: 135px;
-}
-
-label {
-  display: block;
-  font-weight: 600;
-  font-size: 0.88rem;
-  color: var(--text-main);
-}
-
 input[type="text"],
 select {
   width: 100%;
-  padding: 0.65rem 0.85rem;
-  font-family: inherit;
+  padding: 0.7rem 0.9rem;
   font-size: 0.95rem;
-  color: var(--input-text);
-  background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 8px;
+  font-family: inherit;
+  color: var(--text-main);
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input[type="text"]:focus,
 select:focus {
-  border-color: var(--input-focus-border);
-  box-shadow: 0 0 0 3px var(--input-focus-ring);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
 }
 
-select {
-  cursor: pointer;
-}
-
-button[type="submit"] {
-  background-color: var(--primary-accent);
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.7rem 1.4rem;
+/* 7. Buttons with Visible :hover Style */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.35rem;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 600;
   font-family: inherit;
+  border-radius: var(--radius-sm);
+  border: none;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-button[type="submit"]:hover {
-  background-color: var(--primary-accent-hover);
+.btn-primary {
+  background-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
 }
 
-button[type="submit"]:active {
+.btn-primary:active {
+  background-color: var(--primary-active);
   transform: translateY(0);
 }
 
-/* Style error message in red */
+.btn-clear-all {
+  background-color: #fef2f2;
+  color: var(--delete-btn);
+  border: 1px solid #fecaca;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+}
+
+.btn-clear-all:hover {
+  background-color: #fee2e2;
+  color: var(--delete-btn-hover);
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+}
+
+/* 8. Error Message Styled in Red */
+#error-message,
 .error-message {
   color: var(--error-color);
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  margin-top: 0.6rem;
+  margin-top: 0.65rem;
   min-height: 1.25rem;
+  transition: opacity 0.2s ease;
 }
 
-/* Clear all button */
-.clear-all-btn {
-  background-color: var(--clear-btn-bg);
-  color: var(--clear-btn-text);
-  border: 1px solid var(--clear-btn-border);
-  border-radius: 8px;
-  padding: 0.4rem 0.85rem;
-  font-size: 0.82rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.clear-all-btn:hover {
-  background-color: var(--clear-btn-hover-bg);
-  color: var(--clear-btn-hover-text);
-}
-
-/* 8. Search & Count Controls */
-.search-box {
+/* 9. Search & Count Controls */
+.search-wrapper {
   margin-bottom: 1rem;
 }
 
 #note-count {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--counter-text);
-  background-color: var(--counter-bg);
-  border: 1px solid var(--counter-border);
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
+  color: var(--text-muted);
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem;
   margin-bottom: 1.25rem;
 }
 
-/* 9. Note Cards & Category Left Borders */
+/* 10. Note Cards Styled with Padding, Border, Border-Radius & Margin */
 .notes-list {
   list-style: none;
   display: flex;
@@ -395,13 +281,14 @@ button[type="submit"]:active {
 }
 
 .note-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
   border-left-width: 5px;
   border-left-style: solid;
-  border-radius: 10px;
-  padding: 1rem 1.25rem;
-  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 0.85rem;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
@@ -410,25 +297,27 @@ button[type="submit"]:active {
 
 .note-card:hover {
   transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
 }
 
 /* Category Left Border Colors */
 .category-personal {
-  border-left-color: var(--category-personal) !important;
+  border-left-color: var(--cat-personal) !important;
 }
 
 .category-work {
-  border-left-color: var(--category-work) !important;
+  border-left-color: var(--cat-work) !important;
 }
 
 .category-study {
-  border-left-color: var(--category-study) !important;
+  border-left-color: var(--cat-study) !important;
 }
 
 .note-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .category-badge {
@@ -436,84 +325,90 @@ button[type="submit"]:active {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.2rem 0.55rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 4px;
 }
 
 .category-badge.category-personal {
-  background-color: rgba(13, 148, 136, 0.15);
-  color: var(--category-personal);
+  background-color: var(--cat-personal-bg);
+  color: var(--cat-personal);
 }
 
 .category-badge.category-work {
-  background-color: rgba(153, 27, 27, 0.15);
-  color: var(--category-work);
+  background-color: var(--cat-work-bg);
+  color: var(--cat-work);
 }
 
 .category-badge.category-study {
-  background-color: rgba(37, 99, 235, 0.15);
-  color: var(--category-study);
+  background-color: var(--cat-study-bg);
+  color: var(--cat-study);
 }
 
 .note-date {
   font-size: 0.8rem;
   color: var(--text-muted);
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+.note-card-body {
+  word-break: break-word;
 }
 
 .note-text {
   font-size: 1rem;
   color: var(--text-main);
   white-space: pre-wrap;
-  word-break: break-word;
+  line-height: 1.5;
 }
 
 .note-card-footer {
   display: flex;
   justify-content: flex-end;
+  margin-top: 0.25rem;
 }
 
 .delete-btn {
-  background-color: var(--clear-btn-bg);
-  color: var(--clear-btn-text);
-  border: 1px solid var(--clear-btn-border);
+  background-color: #fef2f2;
+  color: var(--delete-btn);
+  border: 1px solid #fecaca;
   border-radius: 6px;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.82rem;
-  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.825rem;
+  font-weight: 600;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .delete-btn:hover {
-  background-color: var(--clear-btn-hover-bg);
-  color: var(--clear-btn-hover-text);
+  background-color: var(--delete-btn);
+  color: #ffffff;
+  border-color: var(--delete-btn);
+  transform: translateY(-1px);
 }
 
 .empty-state-message {
   text-align: center;
   padding: 2.25rem 1rem;
   color: var(--text-muted);
-  font-style: italic;
   font-size: 0.95rem;
-  background-color: var(--counter-bg);
-  border: 1px dashed var(--counter-border);
-  border-radius: 8px;
+  font-style: italic;
+  background-color: #f8fafc;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
 }
 
-/* 10. Footer (Day 4) */
+/* 11. Footer */
 .app-footer {
   text-align: center;
   padding: 2rem 1rem;
-  color: var(--footer-text);
-  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  border-top: 1px solid var(--border-color);
+  background-color: #ffffff;
   margin-top: auto;
-  border-top: 1px solid var(--footer-border);
-  transition: border-color 0.3s ease, color 0.3s ease;
 }
 
-/* 11. Responsive Design: 600px or narrower */
+/* 12. Responsive Design: @media (max-width: 600px) */
 @media (max-width: 600px) {
   .note-form {
     flex-direction: column;
@@ -522,16 +417,35 @@ button[type="submit"]:active {
 
   .form-group-text,
   .form-group-select,
-  button[type="submit"] {
+  .btn-primary {
     width: 100%;
   }
 
   .main-content {
-    margin: 1rem auto;
-    padding: 0 1rem;
+    margin: 1.25rem auto;
+    padding: 0 0.85rem;
   }
 
   .card {
     padding: 1.25rem;
+    border-radius: 10px;
   }
+}
+
+/* 13. Auxiliary styles for about.html compatibility */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+th {
+  background-color: #f1f5f9;
+  font-weight: 600;
 }

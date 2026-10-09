@@ -1,23 +1,24 @@
-// QuickNotes - Adapted from Day 4 Logic with Project 1 Features
+// QuickNotes - Application Logic
 
-const STORAGE_KEY = "quicknotes";
+// LocalStorage key constants
+const STORAGE_KEY = "quicknotes_notes";
 
-// Global notes array
+// Notes stored as an array of objects: { id, text, category, createdAt }
 let notes = [];
 
-// DOM Elements
-const noteForm = document.getElementById("note-form");
-const noteInput = document.getElementById("note-input");
-const noteCategory = document.getElementById("note-category");
-const errorMessage = document.getElementById("error-message");
-const notesList = document.getElementById("notes-list");
-const noteCount = document.getElementById("note-count");
-const searchInput = document.getElementById("search-input");
-const clearAllBtn = document.getElementById("clear-all-btn");
-const themeToggle = document.getElementById("theme-toggle");
+// DOM elements selected strictly using querySelector as required
+const noteForm = document.querySelector("#note-form");
+const noteInput = document.querySelector("#note-input");
+const noteCategory = document.querySelector("#note-category");
+const errorMessage = document.querySelector("#error-message");
+const notesList = document.querySelector("#notes-list");
+const noteCount = document.querySelector("#note-count");
+const searchInput = document.querySelector("#search-input");
+const clearAllBtn = document.querySelector("#clear-all-btn");
 
 /**
- * Formats a date into a readable string (e.g. "Oct 6, 2026, 6:30 PM").
+ * Formats a date into a clean, human-readable string.
+ * Example: "Oct 9, 2026, 11:00 AM"
  */
 function formatReadableDate(date) {
   return date.toLocaleString("en-US", {
@@ -31,15 +32,6 @@ function formatReadableDate(date) {
 }
 
 /**
- * Escapes HTML characters to prevent XSS.
- */
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-/**
  * Saves notes to localStorage using JSON.stringify.
  */
 function saveNotes() {
@@ -48,14 +40,20 @@ function saveNotes() {
 
 /**
  * Loads notes from localStorage using JSON.parse.
+ * Supports fallback to previous key if present.
  */
 function loadNotes() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
+  const savedData = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("quicknotes");
+  if (savedData) {
     try {
-      const parsed = JSON.parse(saved);
-      notes = Array.isArray(parsed) ? parsed : [];
+      const parsed = JSON.parse(savedData);
+      if (Array.isArray(parsed)) {
+        notes = parsed;
+      } else {
+        notes = [];
+      }
     } catch (e) {
+      console.error("Failed to parse notes from localStorage:", e);
       notes = [];
     }
   } else {
@@ -64,8 +62,10 @@ function loadNotes() {
 }
 
 /**
- * Updates #note-count correctly:
- * "You have no notes yet.", "You have 1 note." or "You have N notes."
+ * Updates the note count paragraph with correct grammatical messages:
+ * - "You have no notes yet."
+ * - "You have 1 note."
+ * - "You have N notes."
  */
 function updateNoteCount() {
   const count = notes.length;
@@ -79,20 +79,31 @@ function updateNoteCount() {
 }
 
 /**
- * Renders note cards, category classes, badges, dates, and delete buttons.
- * Supports case-insensitive search filtering.
+ * Deletes an individual note by ID and updates storage and list.
  */
-function renderNotes() {
-  notesList.innerHTML = "";
+function deleteNote(id) {
+  notes = notes.filter((note) => String(note.id) !== String(id));
+  saveNotes();
+  render();
+}
+
+/**
+ * Rebuilds the notes list from the array using createElement and textContent.
+ * NEVER uses innerHTML for user text.
+ * Handles search filtering and empty search results.
+ */
+function render() {
+  // Clear the existing list contents
+  notesList.textContent = "";
 
   const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
-  // Filter notes (case-insensitive)
+  // Filter notes based on search query (case-insensitive)
   const filteredNotes = query === ""
     ? notes
-    : notes.filter((n) => n.text.toLowerCase().includes(query));
+    : notes.filter((note) => note.text.toLowerCase().includes(query));
 
-  // If search finds nothing, show message in the list
+  // If a search finds nothing, show a message in the list
   if (query !== "" && filteredNotes.length === 0) {
     const emptyLi = document.createElement("li");
     emptyLi.className = "empty-state-message";
@@ -102,25 +113,55 @@ function renderNotes() {
     return;
   }
 
-  // Render cards
+  // Build each note card purely using DOM methods and textContent
   filteredNotes.forEach((note) => {
     const li = document.createElement("li");
     const categoryClass = `category-${note.category.toLowerCase()}`;
     li.className = `note-card ${categoryClass}`;
-    li.setAttribute("data-id", note.id);
 
-    li.innerHTML = `
-      <div class="note-card-header">
-        <span class="category-badge ${categoryClass}">${escapeHtml(note.category)}</span>
-        <span class="note-date">${escapeHtml(note.createdAt)}</span>
-      </div>
-      <div class="note-card-body">
-        <p class="note-text">${escapeHtml(note.text)}</p>
-      </div>
-      <div class="note-card-footer">
-        <button type="button" class="delete-btn" data-id="${escapeHtml(String(note.id))}">Delete</button>
-      </div>
-    `;
+    // Note card header: category badge and timestamp
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "note-card-header";
+
+    const categoryBadge = document.createElement("span");
+    categoryBadge.className = `category-badge ${categoryClass}`;
+    categoryBadge.textContent = note.category;
+
+    const dateSpan = document.createElement("span");
+    dateSpan.className = "note-date";
+    dateSpan.textContent = note.createdAt;
+
+    headerDiv.appendChild(categoryBadge);
+    headerDiv.appendChild(dateSpan);
+
+    // Note card body: safe user text with textContent
+    const bodyDiv = document.createElement("div");
+    bodyDiv.className = "note-card-body";
+
+    const textP = document.createElement("p");
+    textP.className = "note-text";
+    textP.textContent = note.text;
+
+    bodyDiv.appendChild(textP);
+
+    // Note card footer: delete button
+    const footerDiv = document.createElement("div");
+    footerDiv.className = "note-card-footer";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "delete-btn";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", () => {
+      deleteNote(note.id);
+    });
+
+    footerDiv.appendChild(deleteBtn);
+
+    // Assemble note card
+    li.appendChild(headerDiv);
+    li.appendChild(bodyDiv);
+    li.appendChild(footerDiv);
 
     notesList.appendChild(li);
   });
@@ -129,16 +170,7 @@ function renderNotes() {
 }
 
 /**
- * Deletes a single note by id.
- */
-function deleteNote(id) {
-  notes = notes.filter((n) => String(n.id) !== String(id));
-  saveNotes();
-  renderNotes();
-}
-
-/**
- * Handles note submission and input validation.
+ * Handles adding a new note with validation.
  */
 function handleAddNote(event) {
   event.preventDefault();
@@ -146,45 +178,52 @@ function handleAddNote(event) {
   const rawText = noteInput.value;
   const trimmedText = rawText.trim();
 
-  // Task 4: Empty validation
+  // Validation 1: empty or only spaces
   if (trimmedText === "") {
     errorMessage.textContent = "Please type a note first.";
     return;
   }
 
-  // Task 4: >200 chars validation
+  // Validation 2: over 200 characters
   if (rawText.length > 200) {
     errorMessage.textContent = "Notes must be 200 characters or fewer.";
     return;
   }
 
-  // Clear error on valid note
+  // Clear validation error when a valid note is added
   errorMessage.textContent = "";
 
+  const category = noteCategory.value;
+
+  // Create note object with id, text, category and createdAt
   const newNote = {
     id: Date.now().toString(),
     text: trimmedText,
-    category: noteCategory.value,
+    category: category,
     createdAt: formatReadableDate(new Date()),
   };
 
   notes.push(newNote);
   saveNotes();
-  renderNotes();
+  render();
 
   // Clear input after adding
   noteInput.value = "";
 }
 
 /**
- * Bonus: Clear all notes with confirm prompt.
+ * Bonus: Handles clearing all notes with confirmation prompt.
  */
 function handleClearAll() {
-  if (notes.length === 0) return;
-  if (confirm("Delete all notes?")) {
+  if (notes.length === 0) {
+    return;
+  }
+
+  const confirmed = confirm("Delete all notes?");
+  if (confirmed) {
     notes = [];
     saveNotes();
-    renderNotes();
+    render();
   }
 }
 
@@ -192,39 +231,32 @@ function handleClearAll() {
 // Event Listeners
 // ---------------------------------------------------------------------------
 
-noteForm.addEventListener("submit", handleAddNote);
-
-notesList.addEventListener("click", (event) => {
-  const target = event.target;
-  if (target && target.classList.contains("delete-btn")) {
-    const id = target.getAttribute("data-id");
-    if (id) deleteNote(id);
-  }
-});
-
-if (searchInput) {
-  searchInput.addEventListener("input", renderNotes);
+// Form submit event
+if (noteForm) {
+  noteForm.addEventListener("submit", handleAddNote);
 }
 
+// Search input live filtering
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    render();
+  });
+}
+
+// Bonus clear all button
 if (clearAllBtn) {
   clearAllBtn.addEventListener("click", handleClearAll);
 }
 
-noteInput.addEventListener("input", () => {
-  if (errorMessage.textContent !== "") {
-    const raw = noteInput.value;
-    if (raw.trim().length > 0 && raw.length <= 200) {
-      errorMessage.textContent = "";
+// Clear error message dynamically when typing valid text
+if (noteInput) {
+  noteInput.addEventListener("input", () => {
+    if (errorMessage && errorMessage.textContent !== "") {
+      const raw = noteInput.value;
+      if (raw.trim().length > 0 && raw.length <= 200) {
+        errorMessage.textContent = "";
+      }
     }
-  }
-});
-
-// Day 4: Theme toggle support
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const isDark = document.body.classList.toggle("dark");
-    themeToggle.textContent = isDark ? "Light mode" : "Dark mode";
-    localStorage.setItem("theme", isDark ? "dark" : "light");
   });
 }
 
@@ -232,18 +264,9 @@ if (themeToggle) {
 // Initialization
 // ---------------------------------------------------------------------------
 function init() {
-  // Day 4: Restore theme preference
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark");
-    if (themeToggle) themeToggle.textContent = "Light mode";
-  } else {
-    document.body.classList.remove("dark");
-    if (themeToggle) themeToggle.textContent = "Dark mode";
-  }
-
   loadNotes();
-  renderNotes();
+  render();
 }
 
+// Initialize on page load
 init();
